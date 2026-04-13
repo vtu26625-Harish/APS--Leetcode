@@ -4,60 +4,29 @@
  *     int val;
  *     TreeNode left;
  *     TreeNode right;
- *     TreeNode(int x) { val = x; }
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-
-import java.util.*;
-
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
-        List<Integer> out = new ArrayList<>();
-        if (root == null) return out;
-
-        TreeNode dummy = new TreeNode(-1);
-        dummy.left = root;
-        root = dummy;
-
-        TreeNode pre = null;
-        while (root != null) {
-            if (root.left != null) {
-                pre = root.left;
-                while (pre.right != null && pre.right != root) {
-                    pre = pre.right;
-                }
-                if (pre.right == null) {
-                    pre.right = root;
-                    root = root.left;
-                } else {
-                    TreeNode node = pre;
-                    reverse(root.left, pre);
-                    while (node != root.left) {
-                        out.add(node.val);
-                        node = node.right;
-                    }
-                    out.add(node.val); // include root.left
-                    reverse(pre, root.left);
-                    pre.right = null;
-                    root = root.right;
-                }
-            } else {
-                root = root.right;
-            }
-        }
-        return out;
+        ArrayList<Integer> result=new ArrayList<>();
+        postorder(root,result);
+        return result;
     }
-
-    // Helper method to reverse the right pointers between 'from' and 'to'
-    private void reverse(TreeNode from, TreeNode to) {
-        if (from == to) return;
-        TreeNode x = from, y = from.right, z;
-        while (true) {
-            z = y.right;
-            y.right = x;
-            x = y;
-            y = z;
-            if (x == to) break;
+    private void postorder(TreeNode node,List<Integer> result)
+    {
+        if(node==null)
+        {
+            return;
         }
+        postorder(node.left,result);
+        postorder(node.right,result);
+        result.add(node.val);
     }
 }
